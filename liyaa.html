@@ -406,16 +406,22 @@ push ini ke repository<!DOCTYPE html>
                     <!-- Pins: Posisi disesuaikan sedikit agar tidak mepet -->
                     <!-- ID dan Class di-update lewat JS, ini struktur dasar -->
                     <!-- Posisi Level 1 digeser sedikit ke kanan (60px) agar tidak kepotong -->
-                    <div class="map-pin" style="left: 60px; top: 250px;" onclick="selectLevel(1)">1<span class="map-pin-label">Start</span></div>
-                    <div class="map-pin locked" style="left: 200px; top: 250px;" onclick="selectLevel(2)">2</div>
-                    <div class="map-pin locked" style="left: 350px; top: 250px;" onclick="selectLevel(3)">3</div>
-                    <div class="map-pin locked" style="left: 500px; top: 250px;" onclick="selectLevel(4)">4</div>
-                    <div class="map-pin locked" style="left: 550px; top: 160px;" onclick="selectLevel(5)">5</div>
-                    <div class="map-pin locked" style="left: 400px; top: 130px;" onclick="selectLevel(6)">6</div>
-                    <div class="map-pin locked" style="left: 250px; top: 130px;" onclick="selectLevel(7)">7</div>
-                    <div class="map-pin locked" style="left: 100px; top: 130px;" onclick="selectLevel(8)">8</div>
-                    <div class="map-pin locked" style="left: 250px; top: 30px;" onclick="selectLevel(9)">9</div>
-                    <div class="map-pin finish locked" style="left: 550px; top: 30px;" onclick="selectLevel(10)">🏁</div>
+                    <!-- Pins: Penempatan di tengah jalan mengikuti jalur snake -->
+                    <!-- Jalur jalan: Horizontal bawah → Kurva ke atas → Horizontal atas → Vertikal ke atas -->
+                    <!-- Level 1-4: Jalur horizontal bawah (y=250) -->
+                    <div class="map-pin" style="left: 60px; top: 235px;" onclick="selectLevel(1)">1<span class="map-pin-label">Start</span></div>
+                    <div class="map-pin locked" style="left: 170px; top: 235px;" onclick="selectLevel(2)">2</div>
+                    <div class="map-pin locked" style="left: 280px; top: 235px;" onclick="selectLevel(3)">3</div>
+                    <div class="map-pin locked" style="left: 390px; top: 235px;" onclick="selectLevel(4)">4</div>
+                    <!-- Level 5: Kurva transisi ke atas (x=550, kurva dari y=250 ke y=130) -->
+                    <div class="map-pin locked" style="left: 520px; top: 170px;" onclick="selectLevel(5)">5</div>
+                    <!-- Level 6-8: Jalur horizontal atas (y=130) -->
+                    <div class="map-pin locked" style="left: 470px; top: 115px;" onclick="selectLevel(6)">6</div>
+                    <div class="map-pin locked" style="left: 320px; top: 115px;" onclick="selectLevel(7)">7</div>
+                    <div class="map-pin locked" style="left: 170px; top: 115px;" onclick="selectLevel(8)">8</div>
+                    <!-- Level 9-10: Jalur vertikal ke atas (x=250, dari y=130 ke y=30) -->
+                    <div class="map-pin locked" style="left: 120px; top: 115px;" onclick="selectLevel(9)">9</div>
+                    <div class="map-pin finish locked" style="left: 120px; top: 45px;" onclick="selectLevel(10)">🏁</div>
                 </div>
             </div>
 
