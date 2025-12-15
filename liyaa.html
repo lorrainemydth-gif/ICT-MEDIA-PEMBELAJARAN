@@ -178,6 +178,14 @@ push ini ke repository<!DOCTYPE html>
 
         .map-pin.locked { background-color: #9ca3af; color: #4b5563; cursor: not-allowed; transform: scale(0.9); }
         .map-pin.completed { background-color: #22c55e; color: white; border-color: #14532d; }
+
+        /* Level position helpers (placed on road center as requested) */
+        .level-5 { left: 260px; top: 320px; }
+        .level-6 { left: 310px; top: 300px; }
+        .level-7 { left: 360px; top: 280px; }
+        .level-8 { left: 410px; top: 260px; }
+        .level-9 { left: 460px; top: 240px; }
+        .finish   { left: 500px; top: 210px; }
         .map-pin.finish { background-color: #f97316; }
         
         .map-pin-label {
@@ -408,20 +416,20 @@ push ini ke repository<!DOCTYPE html>
                     <!-- Posisi Level 1 digeser sedikit ke kanan (60px) agar tidak kepotong -->
                     <!-- Pins: Penempatan di tengah jalan mengikuti jalur snake -->
                     <!-- Jalur jalan: Horizontal bawah → Kurva ke atas → Horizontal atas → Vertikal ke atas -->
-                    <!-- Level 1-4: Jalur horizontal bawah (y=250) -->
-                    <div class="map-pin" style="left: 60px; top: 235px;" onclick="selectLevel(1)">1<span class="map-pin-label">Start</span></div>
-                    <div class="map-pin locked" style="left: 170px; top: 235px;" onclick="selectLevel(2)">2</div>
-                    <div class="map-pin locked" style="left: 280px; top: 235px;" onclick="selectLevel(3)">3</div>
-                    <div class="map-pin locked" style="left: 390px; top: 235px;" onclick="selectLevel(4)">4</div>
-                    <!-- Level 5: Kurva transisi ke atas (x=550, kurva dari y=250 ke y=130) -->
-                    <div class="map-pin locked" style="left: 520px; top: 170px;" onclick="selectLevel(5)">5</div>
-                    <!-- Level 6-8: Jalur horizontal atas (y=130) -->
-                    <div class="map-pin locked" style="left: 440px; top: 115px;" onclick="selectLevel(6)">6</div>
-                    <div class="map-pin locked" style="left: 290px; top: 115px;" onclick="selectLevel(7)">7</div>
-                    <div class="map-pin locked" style="left: 170px; top: 115px;" onclick="selectLevel(8)">8</div>
-                    <!-- Level 9-10: Jalur vertikal ke atas (x=250, dari y=130 ke y=30) -->
-                    <div class="map-pin locked" style="left: 120px; top: 115px;" onclick="selectLevel(9)">9</div>
-                    <div class="map-pin finish locked" style="left: 120px; top: 45px;" onclick="selectLevel(10)">🏁</div>
+                    <!-- Level 1-4: Jalur horizontal bawah (y=235) -->
+                    <div class="map-pin" style="top: 235px; left: 60px;" onclick="selectLevel(1)">1<span class="map-pin-label">Start</span></div>
+                    <div class="map-pin locked" style="top: 235px; left: 170px;" onclick="selectLevel(2)">2</div>
+                    <div class="map-pin locked" style="top: 235px; left: 280px;" onclick="selectLevel(3)">3</div>
+                    <div class="map-pin locked" style="top: 235px; left: 390px;" onclick="selectLevel(4)">4</div>
+                    <!-- Level 5: gunakan helper class level-5 (posisi di CSS) -->
+                    <div class="map-pin locked level-5" onclick="selectLevel(5)">5</div>
+                    <!-- Level 6-8: gunakan helper classes level-6..level-8 -->
+                    <div class="map-pin locked level-6" onclick="selectLevel(6)">6</div>
+                    <div class="map-pin locked level-7" onclick="selectLevel(7)">7</div>
+                    <div class="map-pin locked level-8" onclick="selectLevel(8)">8</div>
+                    <!-- Level 9 dan Finish: gunakan level-9 dan finish helpers -->
+                    <div class="map-pin locked level-9" onclick="selectLevel(9)">9</div>
+                    <div class="map-pin finish locked finish" onclick="selectLevel(10)">🏁</div>
                 </div>
             </div>
 
