@@ -161,14 +161,7 @@ push ini ke repository<!DOCTYPE html>
             transform: translate(-50%, -50%); /* center pin at its left/top coords */
         }
         /* When map-board has class .show-pins the pins become visible */
-        #map-board.show-pins .map-pin { display: flex; pointer-events: auto; }
-
-        /* Invisible but tappable hotspots that sit over numbers on the map */
-        .map-hotspot {
-            position: absolute; width: 48px; height: 48px; transform: translate(-50%, -50%);
-            background: transparent; border: 0; border-radius: 999px; cursor: pointer; z-index: 40;
-        }
-        .map-hotspot:focus, .map-hotspot:hover { outline: 3px solid rgba(250,204,21,0.95); outline-offset: 2px; }
+        /* (pin overlays and hotspots removed for a cleaner map UI) */
         .map-pin:hover { transform: translate(-50%, -50%) scale(1.15); } /* Hover lebih nendang */
         
         /* ANIMASI BERDENYUT UNTUK LEVEL SAAT INI */
@@ -378,6 +371,9 @@ push ini ke repository<!DOCTYPE html>
 
 
                     <!-- Level pin elements removed per request (no overlay circles) -->
+                </div>
+                <div class="mt-4">
+                    <button id="map-next-btn" onclick="mapNext()" class="btn-3d bg-yellow-400 text-black font-black py-3 px-6 rounded-xl shadow-md">NEXT</button>
                 </div>
             </div>
 
@@ -1754,10 +1750,7 @@ push ini ke repository<!DOCTYPE html>
                 // Musik hanya akan nyala saat id === 'none' (Gameplay)
                 toggleBGM(false);
             }
-            // When opening the map screen, try aligning pins to the numbers automatically
-            if (id === 'screen-map') {
-                setTimeout(() => { try { alignPinsToNumbers(); } catch(e){ console.warn('alignPinsToNumbers failed', e); } }, 50);
-            }
+            // When opening map screen: nothing auto-aligned now (hotspots removed)
         }
 
         // --- GLOBAL FUNCTIONS (For HTML access) ---
@@ -1793,6 +1786,12 @@ push ini ke repository<!DOCTYPE html>
                 state.currentLevel = lvl;
                 showScreen('screen-rules');
             }
+        };
+
+        // Map NEXT button handler: start current unlocked level
+        window.mapNext = () => {
+            state.currentLevel = state.maxLevel || 1;
+            showScreen('screen-rules');
         };
 
         window.startGame = async () => {
@@ -2182,22 +2181,8 @@ push ini ke repository<!DOCTYPE html>
             // Remove any existing hotspots we created before
             board.querySelectorAll('.map-hotspot').forEach(n=>n.remove());
 
-            // create clickable hotspots (in visual order) and map to levels 1..9
-            const scaleX = board.clientWidth / w; const scaleY = board.clientHeight / h;
-            const maxLevels = 9;
-            const count = Math.min(centroids.length, maxLevels);
-            for(let i=0;i<count;i++){
-                const c = centroids[i]; const lvl = i+1;
-                const btn = document.createElement('button');
-                btn.className = 'map-hotspot';
-                btn.setAttribute('aria-label', `Level ${lvl}`);
-                btn.dataset.level = String(lvl);
-                btn.style.left = Math.round(c.x*scaleX) + 'px';
-                btn.style.top = Math.round(c.y*scaleY) + 'px';
-                btn.onclick = () => { window.selectLevel(lvl); };
-                board.appendChild(btn);
-            }
-            console.log('Created', count, 'clickable hotspots for levels');
+            // Hotspot creation removed — map remains a visual only element now.
+            console.log('Detection completed, hotspots disabled by configuration');
         }
 
         function executeFinishSequence() {
