@@ -160,6 +160,8 @@ push ini ke repository<!DOCTYPE html>
             box-shadow: 4px 4px 0px rgba(0,0,0,0.5); /* Shadow lebih tebal */
             transform: translate(-50%, -50%); /* center pin at its left/top coords */
         }
+        /* When map-board has class .show-pins the pins become visible */
+        #map-board.show-pins .map-pin { display: flex; pointer-events: auto; }
         .map-pin:hover { transform: translate(-50%, -50%) scale(1.15); } /* Hover lebih nendang */
         
         /* ANIMASI BERDENYUT UNTUK LEVEL SAAT INI */
@@ -1762,6 +1764,10 @@ push ini ke repository<!DOCTYPE html>
                 // Musik hanya akan nyala saat id === 'none' (Gameplay)
                 toggleBGM(false);
             }
+            // When opening the map screen, try aligning pins to the numbers automatically
+            if (id === 'screen-map') {
+                setTimeout(() => { try { alignPinsToNumbers(); } catch(e){ console.warn('alignPinsToNumbers failed', e); } }, 50);
+            }
         }
 
         // --- GLOBAL FUNCTIONS (For HTML access) ---
@@ -2135,6 +2141,67 @@ push ini ke repository<!DOCTYPE html>
                 
                 p.innerHTML = `${t}${l?`<span class="map-pin-label">${l}</span>`:''}`;
             });
+        }
+
+        // Align pins automatically by detecting number blobs on the map image.
+        async function alignPinsToNumbers() {
+            const board = document.getElementById('map-board');
+            // get background image url
+            const bg = getComputedStyle(board).backgroundImage;
+            const m = bg.match(/url\(["']?(.*?)["']?\)/);
+            if(!m) return;
+            const url = m[1];
+
+            // load image
+            const img = await new Promise((res, rej) => { const i=new Image(); i.crossOrigin='Anonymous'; i.onload=()=>res(i); i.onerror=rej; i.src=url; });
+            const w = img.naturalWidth, h = img.naturalHeight;
+            const c = document.createElement('canvas'); c.width = w; c.height = h;
+            const ctx = c.getContext('2d'); ctx.drawImage(img,0,0);
+            const data = ctx.getImageData(0,0,w,h).data;
+
+            // simple detection: find green pixels likely from number glyphs (green outline) or white centers
+            const mask = new Uint8Array(w*h);
+            for(let y=0;y<h;y++) for(let x=0;x<w;x++) {
+                const i = (y*w+x)*4; const r=data[i], g=data[i+1], b=data[i+2];
+                if ((g>140 && g>r+20 && g>b+20) || (r>200 && g>200 && b>200)) mask[y*w+x]=1;
+            }
+
+            // label connected components (simple flood fill)
+            const labels = new Int32Array(w*h); let next=1; const rects={};
+            for(let y=0;y<h;y++) for(let x=0;x<w;x++){ const idx=y*w+x; if(mask[idx] && labels[idx]===0){
+                const stack=[idx]; labels[idx]=next; let minx=x,maxx=x,miny=y,maxy=y,area=0;
+                while(stack.length){ const cur=stack.pop(); const cy=Math.floor(cur/w), cx=cur%w; area++; if(cx<minx)minx=cx; if(cx>maxx)maxx=cx; if(cy<miny)miny=cy; if(cy>maxy)maxy=cy;
+                    // 4-neighbors
+                    const n1=cur-1, n2=cur+1, n3=cur-w, n4=cur+w;
+                    if(cx>0 && mask[n1] && labels[n1]===0){ labels[n1]=next; stack.push(n1); }
+                    if(cx<w-1 && mask[n2] && labels[n2]===0){ labels[n2]=next; stack.push(n2); }
+                    if(cy>0 && mask[n3] && labels[n3]===0){ labels[n3]=next; stack.push(n3); }
+                    if(cy<h-1 && mask[n4] && labels[n4]===0){ labels[n4]=next; stack.push(n4); }
+                }
+                rects[next]={minx,miny,maxx,maxy,area}; next++;
+            }}
+
+            const comps = Object.values(rects).filter(r=>r.area>20 && (r.maxx-r.minx)<80 && (r.maxy-r.miny)<80);
+            // compute centroids
+            const centroids = comps.map(r=>({x: (r.minx+r.maxx)/2, y: (r.miny+r.maxy)/2, area: r.area}));
+            if(centroids.length===0) { console.warn('No centroids found'); return; }
+
+            // sort roughly by path: lower rows first (y desc), then x asc
+            centroids.sort((a,b)=>{ if(Math.abs(b.y-a.y)>20) return b.y-a.y; return a.x-b.x; });
+
+            // assign to pins (skip finish which was removed earlier)
+            const pins = Array.from(document.querySelectorAll('.map-pin')).filter(p=>/level-/.test(p.className));
+            const count = Math.min(pins.length, centroids.length);
+            const scaleX = board.clientWidth / w; const scaleY = board.clientHeight / h;
+            for(let i=0;i<count;i++){
+                const p = pins[i]; const c = centroids[i];
+                p.style.left = Math.round(c.x*scaleX) + 'px';
+                p.style.top = Math.round(c.y*scaleY) + 'px';
+            }
+
+            // show pins visually
+            board.classList.add('show-pins');
+            console.log('Placed', count, 'pins over detected numbers');
         }
 
         function executeFinishSequence() {
