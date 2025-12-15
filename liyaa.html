@@ -147,10 +147,10 @@ push ini ke repository<!DOCTYPE html>
         }
         /* Decorative Map Elements (Houses, Trees) */
         .map-deco {
-            position: absolute; pointer-events: none; z-index: 1;
-        }
-
-        .map-pin {
+            /* Visible and interactive: place these circles over the numbers on the map image */
+            position: absolute; width: 56px; height: 56px; display: flex; pointer-events: auto;
+            background-color: #fde047; border: 3px solid #000;
+            border-radius: 50%; align-items: center; justify-content: center; display: flex;
             /* UKURAN DIPERBESAR DARI 40px KE 56px AGAR MUDAH DISENTUH */
             /* Hidden per request: remove visible level circles from map */
             position: absolute; width: 56px; height: 56px; display: none; pointer-events: none;
