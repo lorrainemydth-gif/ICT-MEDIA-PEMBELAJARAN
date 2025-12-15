@@ -162,6 +162,13 @@ push ini ke repository<!DOCTYPE html>
         }
         /* When map-board has class .show-pins the pins become visible */
         #map-board.show-pins .map-pin { display: flex; pointer-events: auto; }
+
+        /* Invisible but tappable hotspots that sit over numbers on the map */
+        .map-hotspot {
+            position: absolute; width: 48px; height: 48px; transform: translate(-50%, -50%);
+            background: transparent; border: 0; border-radius: 999px; cursor: pointer; z-index: 40;
+        }
+        .map-hotspot:focus, .map-hotspot:hover { outline: 3px solid rgba(250,204,21,0.95); outline-offset: 2px; }
         .map-pin:hover { transform: translate(-50%, -50%) scale(1.15); } /* Hover lebih nendang */
         
         /* ANIMASI BERDENYUT UNTUK LEVEL SAAT INI */
@@ -2172,19 +2179,25 @@ push ini ke repository<!DOCTYPE html>
             // sort roughly by path: lower rows first (y desc), then x asc
             centroids.sort((a,b)=>{ if(Math.abs(b.y-a.y)>20) return b.y-a.y; return a.x-b.x; });
 
-            // assign to pins (skip finish which was removed earlier)
-            const pins = Array.from(document.querySelectorAll('.map-pin')).filter(p=>/level-/.test(p.className));
-            const count = Math.min(pins.length, centroids.length);
-            const scaleX = board.clientWidth / w; const scaleY = board.clientHeight / h;
-            for(let i=0;i<count;i++){
-                const p = pins[i]; const c = centroids[i];
-                p.style.left = Math.round(c.x*scaleX) + 'px';
-                p.style.top = Math.round(c.y*scaleY) + 'px';
-            }
+            // Remove any existing hotspots we created before
+            board.querySelectorAll('.map-hotspot').forEach(n=>n.remove());
 
-            // show pins visually
-            board.classList.add('show-pins');
-            console.log('Placed', count, 'pins over detected numbers');
+            // create clickable hotspots (in visual order) and map to levels 1..9
+            const scaleX = board.clientWidth / w; const scaleY = board.clientHeight / h;
+            const maxLevels = 9;
+            const count = Math.min(centroids.length, maxLevels);
+            for(let i=0;i<count;i++){
+                const c = centroids[i]; const lvl = i+1;
+                const btn = document.createElement('button');
+                btn.className = 'map-hotspot';
+                btn.setAttribute('aria-label', `Level ${lvl}`);
+                btn.dataset.level = String(lvl);
+                btn.style.left = Math.round(c.x*scaleX) + 'px';
+                btn.style.top = Math.round(c.y*scaleY) + 'px';
+                btn.onclick = () => { window.selectLevel(lvl); };
+                board.appendChild(btn);
+            }
+            console.log('Created', count, 'clickable hotspots for levels');
         }
 
         function executeFinishSequence() {
