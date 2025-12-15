@@ -177,7 +177,8 @@ push ini ke repository<!DOCTYPE html>
             z-index: 20; /* Selalu di atas */
         }
 
-        .map-pin.locked { background-color: rgba(156, 163, 175, 0.4); color: #4b5563; cursor: not-allowed; transform: scale(0.9); }
+        .map-pin.locked { background-color: #9ca3af; color: #4b5563; cursor: not-allowed; transform: scale(0.9); font-size: 0.9rem; }
+        .map-pin.locked::before { content: "🔒"; margin-right: 2px; font-size: 0.8rem; }
         .map-pin.completed { background-color: #22c55e; color: white; border-color: #14532d; }
 
           /* Level position helpers (placed on road center as requested)
