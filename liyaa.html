@@ -130,8 +130,9 @@ push ini ke repository<!DOCTYPE html>
 
         /* Map Landscape - Robbery Bob Style */
         #map-board {
-            background-image: url('https://raw.githubusercontent.com/lorrainemydth-gif/ICT-MEDIA-PEMBELAJARAN/783d7e8f9c0707c01d82e38763a7aa4dbba32391/PETA.png');
-            background-size: cover;
+            /* Use the local 640×300 map image for a pixel-perfect fit */
+            background-image: url('PETA-640x300.png');
+            background-size: 100% 100%; /* exact fit for 640×300 container */
             background-position: center;
             background-repeat: no-repeat;
             border: 4px solid #000; 
