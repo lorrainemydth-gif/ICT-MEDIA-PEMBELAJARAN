@@ -749,7 +749,7 @@
                     id: 5, x: 5000, type: 'multi-card', visual: 'mud', 
                     question: "LEVEL 5: Jenis-jenis Tumbukan — tiga kartu soal esai (kerjakan berurutan).",
                     cards: [
-                        { id: '5-1', title: 'Kartu 1 — Tumbukan Tak Lenting Sama Sekali', open: true, locked: false, question: "Bola A dan B mula-mula bergerak seperti pada gambar. Kedua bola kemudian bertumbukan tidak lenting sama sekali. Tentukan kecepatan bola A dan B setelah tumbukan!", sim: { type: 'image', src: 'https://raw.githubusercontent.com/lorrainemydth-gif/ICT-MEDIA-PEMBELAJARAN/1aa2ac16b6c9e9df7146a2f40c9a5b39246b693f/WhatsApp%20Image%202025-12-15%20at%208.33.04%20AM.jpeg' } },
+                        { id: '5-1', title: 'Kartu 1 — Tumbukan Tak Lenting Sama Sekali', open: true, locked: false, type: 'calc', question: "Bola A dan B mula-mula bergerak seperti pada gambar. Kedua bola kemudian bertumbukan tidak lenting sama sekali. Tentukan kecepatan bola A setelah tumbukan (m/s)!", sim: { type: 'image', src: 'https://raw.githubusercontent.com/lorrainemydth-gif/ICT-MEDIA-PEMBELAJARAN/1aa2ac16b6c9e9df7146a2f40c9a5b39246b693f/WhatsApp%20Image%202025-12-15%20at%208.33.04%20AM.jpeg' }, options: { input: { correctValue: 1, tolerance: 0.05, unit: 'm/s' }, feedback: { correct: 'Benar — kecepatan bola A setelah tumbukan = 1 m/s', wrong: 'Coba lagi — gunakan kekekalan momentum untuk tumbukan tidak lenting sama sekali.' } } },
                         { id: '5-2', title: 'Kartu 2 — Tumbukan Lenting Sebagian', open: false, locked: true, question: "Sebuah bola basket jatuh dari ketinggian 6,25 m lalu memantul kembali hingga ketinggian 4,5 m. Tentukan tinggi pantulan bola basket berikutnya." },
                         { id: '5-3', title: 'Kartu 3 — Tumbukan Lenting Sempurna', open: false, locked: true, question: "Terdapat dua benda yang memiliki massa 10 kg dan 6 kg. Keduanya bergerak pada bidang datar yang licin, sementara kecepatannya adalah 4 m/s dan 8 m/s. Arah kedua benda berlawanan. Jika terjadi tumbukan lenting sempurna, maka berapakah kecepatan masing – masing benda setelah tumbukan?" }
                     ],
@@ -2045,20 +2045,57 @@
             const card = cp.cards[cardIdx];
             if (card.locked) return;
 
-            const textarea = document.getElementById(`card-input-${card.id}`);
+            const inputEl = document.getElementById(`card-input-${card.id}`);
             const btn = document.getElementById(`card-btn-${card.id}`);
             const status = document.getElementById(`card-status-${card.id}`);
 
-            const answer = textarea.value.trim();
-            if (answer.length < 3) {
-                status.innerText = 'Jawaban terlalu singkat'; status.classList.remove('text-green-700'); status.classList.add('text-yellow-600');
-                setTimeout(()=>{ status.innerText = ''; status.classList.remove('text-yellow-600'); }, 2000);
-                return;
-            }
+            const raw = inputEl.value.trim();
 
-            // Lock this card UI
-            textarea.disabled = true; btn.disabled = true; status.innerText = 'Selesai'; status.classList.add('text-green-700');
-            card.userAnswer = answer;
+            // If numeric card, parse and validate against provided correctValue
+            if (card.type === 'calc') {
+                let val = NaN;
+                if (raw.includes('/')) {
+                    const parts = raw.split('/').map(s => s.trim());
+                    if (parts.length === 2) {
+                        const a = parseFloat(parts[0].replace(',','.'));
+                        const b = parseFloat(parts[1].replace(',','.'));
+                        if (!isNaN(a) && !isNaN(b) && b !== 0) val = a / b;
+                    }
+                } else { val = parseFloat(raw.replace(',','.')); }
+
+                if (isNaN(val)) {
+                    status.innerText = 'Input tidak valid'; status.classList.remove('text-green-700'); status.classList.add('text-yellow-600');
+                    setTimeout(()=>{ status.innerText = ''; status.classList.remove('text-yellow-600'); }, 2000);
+                    return;
+                }
+
+                const target = (card.options && card.options.input && card.options.input.correctValue) ? card.options.input.correctValue : NaN;
+                const tol = (card.options && card.options.input && card.options.input.tolerance) ? card.options.input.tolerance : 0.01;
+                if (isNaN(target) || Math.abs(val - target) > tol) {
+                    // wrong answer — do not lock, give hint
+                    status.innerText = (card.options && card.options.feedback && card.options.feedback.wrong) ? card.options.feedback.wrong : 'Jawaban salah';
+                    status.classList.remove('text-green-700'); status.classList.add('text-red-600');
+                    setTimeout(()=>{ status.innerText = ''; status.classList.remove('text-red-600'); }, 2500);
+                    return;
+                }
+
+                // Correct
+                inputEl.disabled = true; btn.disabled = true; status.innerText = 'Benar'; status.classList.add('text-green-700');
+                card.userAnswer = raw;
+
+            } else {
+                // essay-style card validation (unchanged)
+                const answer = raw;
+                if (answer.length < 3) {
+                    status.innerText = 'Jawaban terlalu singkat'; status.classList.remove('text-green-700'); status.classList.add('text-yellow-600');
+                    setTimeout(()=>{ status.innerText = ''; status.classList.remove('text-yellow-600'); }, 2000);
+                    return;
+                }
+
+                // Lock this card UI
+                inputEl.disabled = true; btn.disabled = true; status.innerText = 'Selesai'; status.classList.add('text-green-700');
+                card.userAnswer = answer;
+            }
 
             // Unlock next card (if any)
             if (cardIdx < cp.cards.length - 1) {
@@ -2164,7 +2201,14 @@
                             </div>
                             ${card.sim && card.sim.type === 'image' ? `<div class="mb-2 w-full h-40 overflow-hidden rounded"><img src="${card.sim.src}" class="w-full h-full object-contain"/></div>` : ''}
                             <p class="text-sm mb-2">${card.question}</p>
-                            <textarea id="card-input-${card.id}" class="w-full p-2 border-2 border-black rounded h-20" placeholder="Tulis jawabanmu di sini..." ${card.locked? 'disabled':''}></textarea>
+                            ${card.type === 'calc' ? `
+                                <div class="flex items-center gap-2 mb-2">
+                                    <input id="card-input-${card.id}" type="text" placeholder="0" class="w-full p-2 border-2 border-black rounded" ${card.locked? 'disabled':''} />
+                                    <span class="text-xs font-bold text-gray-500">${(card.options && card.options.input && card.options.input.unit) ? card.options.input.unit : ''}</span>
+                                </div>
+                            ` : `
+                                <textarea id="card-input-${card.id}" class="w-full p-2 border-2 border-black rounded h-20" placeholder="Tulis jawabanmu di sini..." ${card.locked? 'disabled':''}></textarea>
+                            `}
                             <div class="flex gap-2 mt-2">
                                 <button id="card-btn-${card.id}" class="btn-3d bg-blue-600 text-white font-black py-2 px-4 rounded uppercase" ${card.locked? 'disabled':''} onclick="completeCard('${card.id}')">Selesai</button>
                                 <div id="card-status-${card.id}" class="text-sm font-black self-center ml-auto text-green-700"></div>
