@@ -785,41 +785,8 @@
                     options: { input: { placeholder: 'Misal: v = 2.0 m/s' }, feedback: { saved: 'Jawaban disimpan untuk penilaian guru — tidak dievaluasi otomatis.' }, noEval: true }
                 },
 
-                // LEVEL 10: IMPULS VEKTOR (Memantul Balik) - SANGAT SULIT (dipindahkan dari id 8)
-                { 
-                    id: 10, x: 8000, type: 'calc', visual: 'wall', 
-                    question: "Sebuah bola jayuh dari ketinggian 1 m. Jika bola memantul kembali dengan ketinggian 0.8 m. Hitunglah tinggi pantulan berikutnya!", 
-                    sim: {
-                        type: 'image',
-                        src: 'https://raw.githubusercontent.com/yuramarvellyn-cmyk/MEDIA-PEMBELAJARAN-ICT/b06badd48158385767ac2a172ad4936921b11d45/soal%208%20ict.jpg'
-                    }, 
-                    options: { 
-                        input: { correctValue: 0.64, tolerance: 0.01 }, 
-                        feedback: { correct: "Sempurna! Gunakan rasio koefisien restitusi.", wrong: "Rumus: h_n = e²·h_(n-1) atau e = √(h_n/h_(n-1))" }, 
-                        explanation: "e = √(0.8/1) = √0.8 ≈ 0.894. h_3 = e²·h_2 = 0.8·0.8 = 0.64 m" 
-                    } 
-                },
-
-                // LEVEL 11: TUMBUKAN LENTING SEMPURNA (Simulasi Kompleks) - PALING SULIT
-                // Menggunakan visual Bumper Car karena relevan dengan lenting
-                { 
-                    id: 11, x: 9000, type: 'calc-multi', visual: 'bumper', 
-                    question: "Arena Bumper Car! Atur simulasi di samping dan hitung kecepatan akhir (v1' dan v2') untuk Tumbukan Lenting Sempurna.", 
-                    sim: { type: 'q1-momentum-interactive' }, 
-                    options: { 
-                        inputs: [
-                            { id: 'ans-v1', label: "Kecepatan Akhir Benda 1 (v1')", unit: "m/s" }, 
-                            { id: 'ans-v2', label: "Kecepatan Akhir Benda 2 (v2')", unit: "m/s" }
-                        ], 
-                        feedback: { 
-                            correct: "Sempurna! Kamu telah menaklukkan materi Momentum!", 
-                            wrong: "Petunjuk Rumus Tumbukan Lenting Sempurna: v1' = ((m1-m2)v1 + 2m2v2) / (m1+m2) dan v2' = ((m2-m1)v2 + 2m1v1) / (m1+m2)" 
-                        } 
-                    } 
-                },
-                
-                // FINISH
-                { id: 12, x: 10000, type: 'finish', visual: 'gate' }
+                // FINISH (langsung setelah rintangan 9)
+                { id: 10, x: 9000, type: 'finish', visual: 'gate' }
             ],
             currentCheckpoint: null
         };
