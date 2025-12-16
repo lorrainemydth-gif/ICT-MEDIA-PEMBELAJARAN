@@ -1,4 +1,4 @@
-push ini ke repository<!DOCTYPE html>
+ push ini ke repository<!DOCTYPE html>
 <html lang="id">
 <head>
     <meta charset="UTF-8">
@@ -494,6 +494,9 @@ push ini ke repository<!DOCTYPE html>
 
                                      <!-- Input Kalkulasi (Multi) -->
                                      <div id="quiz-options-multi-input" class="hidden space-y-3 bg-gray-100 p-4 rounded-xl border-2 border-black"></div>
+
+                                     <!-- Kartu Esai Multi (Level 5) -->
+                                     <div id="quiz-options-cards" class="hidden space-y-3 bg-gray-100 p-4 rounded-xl border-2 border-black"></div>
                                 </div>
                                 
                                 <!-- Tombol & Feedback -->
@@ -682,79 +685,77 @@ push ini ke repository<!DOCTYPE html>
             checkpoints: [
                 // LEVEL 1: HITUNGAN MOMENTUM DASAR (p = mv) - PALING MUDAH
                 { 
-                    id: 1, x: 1000, type: 'calc', visual: 'river', 
-                    question: "Dua buah bola masing-masing mempunyai massa 2 kg dan 3 kg. Bola pertama bergerak ke utara dengan 4 m/s dan bola kedua ke barat dengan 10 m/s. Berapakah besar momentom total kedua benda tersebut ?",
+                    id: 1, x: 1000, type: 'calc-multi', visual: 'river', 
+                    question: "Sebuah benda mula-mula bergerak ke utara dengan kecepatan 6 m/s, lalu berbelok ke barat dengan kecepatan 8 m/s. Massa benda tersebut adalah 50 kg. Tentukan:\na. Nilai momentum total\nb. Arah momentum total (dalam derajat dari arah timur, 0° = timur, searah putaran positif).",
                     sim: {
                         type: 'image',
-                        src: 'https://raw.githubusercontent.com/yuramarvellyn-cmyk/MEDIA-PEMBELAJARAN-ICT/e37a8a85d88b782be6756be0ad058337048ccaed/soal%201%20ict.jpg'
+                        src: 'https://raw.githubusercontent.com/lorrainemydth-gif/ICT-MEDIA-PEMBELAJARAN/ea75bc94710148d1b0e8a9b7886cad337028fd28/PETA%20(640%20x%20300%20piksel).png'
                     },
                     options: { 
-                        input: { correctValue: 31.05, tolerance: 0.1 }, 
-                        feedback: { correct: "Betul — gunakan p = m.v dan gabungkan komponen vektor.", wrong: "Coba lagi — hitung p masing-masing bola lalu gabungkan dengan teorema Pythagoras." }, 
-                        explanation: "p1 = 2 kg * 4 m/s = 8 kg·m/s (utara); p2 = 3 kg * 10 m/s = 30 kg·m/s (barat). |p_total| = sqrt(8^2 + 30^2) ≈ 31.05 kg·m/s."
+                        inputs: [
+                            { id: 'ans-p1-magnitude', label: 'Momentum total |p|', unit: 'kg·m/s', correctValue: 500, tolerance: 0.5 },
+                            { id: 'ans-p1-angle', label: 'Arah (deg dari timur, ccw)', unit: '°', correctValue: 143.13, tolerance: 0.5 }
+                        ],
+                        feedback: { correct: "Betul — gunakan komponen vektor dan arctan2 untuk sudut.", wrong: "Coba lagi — hitung p_x = m·v_x dan p_y = m·v_y lalu gabungkan." },
+                        explanation: "p_x = -400 kg·m/s (barat), p_y = +300 kg·m/s (utara). |p| = sqrt(400^2 + 300^2) = 500 kg·m/s. sudut = arctan2(300,-400) ≈ 143.13° (dari timur, ccw)."
                     } 
                 },
 
                 // LEVEL 2: HITUNGAN IMPULS DASAR (I = Δp) - MUDAH
                 { 
-                    id: 2, x: 2000, type: 'calc', visual: 'cliff', 
-                    question: "Bola bermassa 2 kg bergerak dengan kecepatan 10 m/s menumbuk tembok. Apabila tumbukan bersifat lenting sebagian dengan koefisien restitusi 0,6 maka Impuls yang dialami bola sebesar... N.s.", 
+                    id: 2, x: 2000, type: 'text-input', visual: 'cliff', 
+                    question: "Gambar berikut menunjukkan grafik resultan gaya (F) yang bekerja pada sebuah benda terhadap waktu (t). Tentukan besar impuls benda dalam selang waktu 3 - 5 sekon!",
                     sim: {
                         type: 'image',
-                        src: 'https://raw.githubusercontent.com/yuramarvellyn-cmyk/MEDIA-PEMBELAJARAN-ICT/e37a8a85d88b782be6756be0ad058337048ccaed/soal%202%20ict.jpg'
+                        src: 'https://raw.githubusercontent.com/lorrainemydth-gif/ICT-MEDIA-PEMBELAJARAN/f303b6da2643fc3d2bc2e76b4249e9c518e7b7eb/WhatsApp%20Image%202025-12-15%20at%208.08.45%20AM.jpeg'
                     },
                     options: { 
-                        input: { correctValue: 32, tolerance: 0 }, 
-                        feedback: { correct: "Benar — hitung Δv lalu kalikan massa.", wrong: "Ingat: untuk tembok tetap v_final = -e v_initial." }, 
-                        explanation: "v_f = -0.6 * 10 = -6 m/s; Δv = v_f - v_i = -6 - 10 = -16 m/s; I = m Δv = 2 * (-16) = -32 N.s (besar impuls = 32 N.s)."
+                        keywords: ['impuls','impulse','N.s','N.s.','N s'],
+                        feedback: { correct: "Jawaban dicatat — bandingkan dengan perhitungan area di bawah kurva.", wrong: "Perhatikan: impuls = integral F dt = luas area di bawah grafik antara 3-5 s." }, 
+                        explanation: "Hitung luas area di bawah kurva antara t=3 dan t=5 sekon (gunakan satuan N·s)."
                     } 
                 },
 
                 // LEVEL 3: HITUNGAN GAYA IMPULSIF - MEDIUM-MUDAH
                 { 
-                    id: 3, x: 3000, type: 'calc', visual: 'spike', 
-                    question: "Sebuah bola bermassa 3 kg jatuh bebas dari ketinggian 20 meter dan mencapai kecepatan 12 m/s saat menyentuh tanah. Setelah menyentuh tanah, bola memantul kembali dengan kecepatan 8 m/s setelah waktu 0,3 detik. Hitunglah gaya rata-rata yang diterima oleh tanah selama bola berhenti dan memantul kembali!", 
+                    id: 3, x: 3000, type: 'calc-multi', visual: 'spike', 
+                    question: "Bola kasti bermassa 150 gram dilempar horizontal ke arah kanan dengan kecepatan 6 m/s. Kemudian bola dipukul sehingga bergerak ke kiri dengan kecepatan 9 m/s. Tentukan:\na. Impuls yang diberikan pemukul pada bola\nb. Gaya rata-rata yang diberikan pemukul jika pemukul dan bola bersentuhan selama 2 sekon\nc. Percepatan rata-rata selama pemukul dan bola bersentuhan",
                     sim: {}, 
                     options: { 
-                        input: { correctValue: 200, tolerance: 5 }, 
-                        feedback: { 
-                            correct: "Tepat! Hitung Δv dan gunakan F = m·Δv/Δt", 
-                            wrong: "Rumus: F = m(v_akhir - v_awal) / Δt" 
-                        },
-                        explanation: "v_awal = -12 m/s (kebawah); v_akhir = +8 m/s (keatas); Δv = 8 - (-12) = 20 m/s; F = 3 * 20 / 0.3 = 200 N."
+                        inputs: [
+                            { id: 'ans-impulse3', label: 'Impuls (N.s)', unit: 'N.s', correctValue: -2.25, tolerance: 0.01 },
+                            { id: 'ans-force3', label: 'Gaya rata-rata (N)', unit: 'N', correctValue: -1.125, tolerance: 0.01 },
+                            { id: 'ans-acc3', label: 'Percepatan rata-rata (m/s²)', unit: 'm/s²', correctValue: -7.5, tolerance: 0.01 }
+                        ],
+                        feedback: { correct: "Benar — gunakan Δp = m(v_f - v_i) dan F_avg = Δp/Δt.", wrong: "Coba ulang: Hitung Δv lalu Δp = m·Δv, lalu bagi dengan Δt untuk F_avg." },
+                        explanation: "m = 0.15 kg; Δv = -9 - 6 = -15 m/s; I = 0.15 * -15 = -2.25 N.s; F_avg = -2.25 / 2 = -1.125 N; a_avg = -15 / 2 = -7.5 m/s²."
                     } 
                 },
 
                 // LEVEL 4: TUMBUKAN TIDAK LENTING (MOBIL & BECAK) - MEDIUM
                 { 
                     id: 4, x: 4000, type: 'calc', visual: 'accident', 
-                    question: "Sebuah mobil bermassa 2000 kg melaju dengan kecepatan 120 km/jam, menabrak sebuah becak bermassa 500 kg yang diam. Berapa kecepatan mobil dan becak setelah tumbukan? (km/jam)", 
-                    sim: {
-                        type: 'image',
-                        src: 'https://raw.githubusercontent.com/ayaa-code/ayaa/49761724ce6d09bcef619d33989a1d464d74c5af/Gambar%20WhatsApp%202025-11-25%20pukul%2016.14.29_5b61a77c.jpg'
-                    }, 
+                    question: "Sebuah senapan massanya 2 kg menembakkan peluru yang massanya 2 gram dengan kelajuan 400 m/s, tentukan kecepatan senapan sesaat peluru lepas dari senapan!",
+                    sim: {}, 
                     options: { 
-                        input: { correctValue: 96, tolerance: 1 }, 
-                        feedback: { 
-                            correct: "Tepat! Momentum Awal = Momentum Akhir.", 
-                            wrong: "Gunakan Rumus: (m1.v1 + m2.v2) = (m1+m2).v'" 
-                        }, 
-                        explanation: "P_awal = (2000*120) + (500*0) = 240.000. Massa Total = 2500. v' = 240.000 / 2500 = 96 km/jam." 
+                        input: { correctValue: 0.4, tolerance: 0.01 }, 
+                        feedback: { correct: "Benar — gunakan kekekalan momentum (m_peluru·v_peluru + m_senapan·v_senapan = 0).", wrong: "Ingat: peluru dan senapan memiliki momentum berlawanan sehingga m_senapan·v_senapan = - m_peluru·v_peluru." }, 
+                        explanation: "v_senapan = - (m_peluru * v_peluru) / m_senapan = - (0.002 * 400)/2 = -0.4 m/s (arah berlawanan peluru)." 
                     } 
                 },
 
                 // LEVEL 5: TUMBUKAN TIDAK LENTING SEMPURNA - SMA KELAS 11 - MEDIUM-SULIT
                 { 
-                    id: 5, x: 5000, type: 'calc', visual: 'mud', 
-                    question: "Sebuah bola bermassa 3 kg bergerak dengan kecepatan 8 m/s menabrak bola lain yang bermassa 2 kg yang bergerak berlawanan arah dengan kecepatan 4 m/s. Jika kedua bola melekat setelah tumbukan, hitung kecepatan akhir kedua bola tersebut (m/s)!", 
-                    sim: {}, 
+                    id: 5, x: 5000, type: 'multi-card', visual: 'mud', 
+                    question: "LEVEL 5: Jenis-jenis Tumbukan — tiga kartu soal esai (kerjakan berurutan).",
+                    cards: [
+                        { id: '5-1', title: 'Kartu 1 — Tumbukan Tak Lenting Sama Sekali', open: true, locked: false, question: "Bola A dan B mula-mula bergerak seperti pada gambar. Kedua bola kemudian bertumbukan tidak lenting sama sekali. Tentukan kecepatan bola A dan B setelah tumbukan!", sim: { type: 'image', src: 'https://raw.githubusercontent.com/lorrainemydth-gif/ICT-MEDIA-PEMBELAJARAN/1aa2ac16b6c9e9df7146a2f40c9a5b39246b693f/WhatsApp%20Image%202025-12-15%20at%208.33.04%20AM.jpeg' } },
+                        { id: '5-2', title: 'Kartu 2 — Tumbukan Lenting Sebagian', open: false, locked: true, question: "Sebuah bola basket jatuh dari ketinggian 6,25 m lalu memantul kembali hingga ketinggian 4,5 m. Tentukan tinggi pantulan bola basket berikutnya." },
+                        { id: '5-3', title: 'Kartu 3 — Tumbukan Lenting Sempurna', open: false, locked: true, question: "Terdapat dua benda yang memiliki massa 10 kg dan 6 kg. Keduanya bergerak pada bidang datar yang licin, sementara kecepatannya adalah 4 m/s dan 8 m/s. Arah kedua benda berlawanan. Jika terjadi tumbukan lenting sempurna, maka berapakah kecepatan masing – masing benda setelah tumbukan?" }
+                    ],
                     options: { 
-                        input: { correctValue: 3.2, tolerance: 0.2 }, 
-                        feedback: { 
-                            correct: "Hebat! Momentum terjaga! I = Δp", 
-                            wrong: "Gunakan Hukum Kekekalan Momentum untuk tumbukan tidak lenting." 
-                        },
-                        explanation: "m1v1 + m2v2 = (m1+m2)v'. (3×8) + (2×(-4)) = (3+2)v'. 24 - 8 = 5v'. v' = 3.2 m/s"
+                        feedback: { correct: "Kartu selesai — lanjutkan ke kartu berikutnya.", wrong: "Selesaikan kartu dulu untuk membuka yang berikutnya." },
+                        explanation: "Kerjakan kartu secara berurutan. Setelah Kartu 1 selesai, Kartu 2 terbuka, dan seterusnya. Kartu 3 adalah kartu terakhir dan menyelesaikan Level 5."
                     } 
                 },
 
@@ -1946,41 +1947,23 @@ push ini ke repository<!DOCTYPE html>
 
             } else if (cp.type === 'calc-multi') {
                 let allCorrect = true;
-                
-                // UPDATE: Cek ID 9 (Karena simulasi pindah ke Level 9)
-                if (cp.id === 9) {
-                    // AMBIL NILAI DARI SIMULASI
-                    const m1 = parseFloat(document.getElementById('col-m1').value);
-                    const v1 = parseFloat(document.getElementById('col-v1').value);
-                    const m2 = parseFloat(document.getElementById('col-m2').value);
-                    const v2 = parseFloat(document.getElementById('col-v2').value);
-                    
-                    // AMBIL JAWABAN USER
-                    const userV1 = parseFloat(document.getElementById('ans-v1').value);
-                    const userV2 = parseFloat(document.getElementById('ans-v2').value);
-                    
-                    // Format Jawaban User untuk Laporan
-                    userAnswerDisplay = `v1'=${isNaN(userV1)?'?':userV1}, v2'=${isNaN(userV2)?'?':userV2}`;
-
-                    // HITUNG KUNCI JAWABAN
-                    const expectedV1 = ((m1 - m2) * v1 + 2 * m2 * v2) / (m1 + m2);
-                    const expectedV2 = ((m2 - m1) * v2 + 2 * m1 * v1) / (m1 + m2);
-                    
-                    // Format Kunci Jawaban untuk Laporan (tetap direkam, tapi jangan tampilkan ke pemain)
-                    correctAnswerDisplay = `v1'=${expectedV1.toFixed(2)}, v2'=${expectedV2.toFixed(2)}`;
-                    
-                    // Validasi
-                    if(isNaN(userV1) || Math.abs(userV1 - expectedV1) > 0.1) allCorrect = false;
-                    if(isNaN(userV2) || Math.abs(userV2 - expectedV2) > 0.1) allCorrect = false;
-                    
-                    if (!allCorrect) {
-                        // Jangan tampilkan jawaban numerik secara langsung ke pemain.
-                        // Tampilkan petunjuk rumus yang sudah didefinisikan di cp.options.feedback.wrong
-                        feedbackText = (cp.options && cp.options.feedback && cp.options.feedback.wrong) ? cp.options.feedback.wrong : "Petunjuk: gunakan rumus tumbukan lenting untuk menghitung v1' dan v2'";
-                    }
+                const parts = [];
+                const keys = [];
+                if (cp.options && Array.isArray(cp.options.inputs)) {
+                    cp.options.inputs.forEach(inp => {
+                        const el = document.getElementById(inp.id);
+                        const val = el ? parseFloat(el.value) : NaN;
+                        parts.push(`${inp.label}=${isNaN(val)?'?':val}${inp.unit?inp.unit:''}`);
+                        keys.push(`${(inp.correctValue!==undefined)?inp.correctValue:'?'}${inp.unit?inp.unit:''}`);
+                        if (isNaN(val) || Math.abs(val - inp.correctValue) > (inp.tolerance || 0)) allCorrect = false;
+                    });
+                    userAnswerDisplay = parts.join(' | ');
+                    correctAnswerDisplay = keys.join(' | ');
                 }
+                // special-case legacy ID 9 behavior remains fallback
+                if (cp.id === 9 && allCorrect) { feedbackText = cp.options.feedback.correct; }
                 if (allCorrect) { correct = true; feedbackText = cp.options.feedback.correct; }
-                else { correct = false; feedbackText = feedbackText || cp.options.feedback.wrong; }
+                else { correct = false; feedbackText = cp.options.feedback.wrong; }
             }
             
             // --- NEW: LOG RESULT LENGKAP ---
@@ -2041,6 +2024,68 @@ push ini ke repository<!DOCTYPE html>
             document.getElementById('level-video').pause();
             prepareQuizUI(state.currentCheckpoint);
         };
+
+        // --- MULTI-CARD HANDLERS FOR LEVEL 5 ---
+        window.completeCard = (cardId) => {
+            const cp = state.currentCheckpoint;
+            if (!cp || cp.type !== 'multi-card') return;
+            const cardIdx = cp.cards.findIndex(c => c.id === cardId);
+            if (cardIdx === -1) return;
+            const card = cp.cards[cardIdx];
+            if (card.locked) return;
+
+            const textarea = document.getElementById(`card-input-${card.id}`);
+            const btn = document.getElementById(`card-btn-${card.id}`);
+            const status = document.getElementById(`card-status-${card.id}`);
+
+            const answer = textarea.value.trim();
+            if (answer.length < 3) {
+                status.innerText = 'Jawaban terlalu singkat'; status.classList.remove('text-green-700'); status.classList.add('text-yellow-600');
+                setTimeout(()=>{ status.innerText = ''; status.classList.remove('text-yellow-600'); }, 2000);
+                return;
+            }
+
+            // Lock this card UI
+            textarea.disabled = true; btn.disabled = true; status.innerText = 'Selesai'; status.classList.add('text-green-700');
+            card.userAnswer = answer;
+
+            // Unlock next card (if any)
+            if (cardIdx < cp.cards.length - 1) {
+                const nextCard = cp.cards[cardIdx+1]; nextCard.locked = false;
+                const nextEl = document.getElementById(`card-${nextCard.id}`);
+                if (nextEl) { nextEl.classList.remove('opacity-60'); }
+                const nextTA = document.getElementById(`card-input-${nextCard.id}`);
+                const nextBtn = document.getElementById(`card-btn-${nextCard.id}`);
+                if (nextTA) nextTA.disabled = false;
+                if (nextBtn) nextBtn.disabled = false;
+                // notify
+                const nStatus = document.getElementById(`card-status-${nextCard.id}`);
+                if (nStatus) { nStatus.innerText = 'Terbuka'; nStatus.classList.add('text-blue-600'); }
+            } else {
+                // Completed final card -> finalize level
+                finalizeMultiCard(cp);
+            }
+        };
+
+        function finalizeMultiCard(cp) {
+            // Build combined answer for reporting
+            const userAns = cp.cards.map(c=>`${c.id}:${(c.userAnswer||'')}`).join(' || ');
+            state.levelResults.push({ level: state.currentLevel, question: cp.question, isCorrect: true, points: 10, userAnswer: userAns, correctAnswer: 'Esai - guru periksa' });
+            state.correctAnswers++;
+            state.score += 10; document.getElementById('score-display').innerText = state.score;
+
+            const fb = document.getElementById('quiz-feedback'); fb.innerText = `SEMUA KARTU SELESAI! ✅ (+10 Poin)`; fb.className = 'text-center font-black mt-2 h-auto text-green-600 text-sm';
+
+            // Open gate and trigger crossing as normal
+            const g = state.gates.find(gate => gate.id === cp.id); if(g) g.open = true;
+            setTimeout(()=>{
+                showScreen('none');
+                startCrossingSequence(cp.visual || 'gate', g ? g.x : state.player.x + 100);
+                state.currentLevel++;
+                if(state.currentLevel > state.maxLevel) { state.maxLevel = state.currentLevel; savePlayerData(); }
+                if(state.currentLevel <= state.checkpoints.length) state.currentCheckpoint = state.checkpoints[state.currentLevel - 1];
+            }, 1200);
+        }
         
         // --- HELPERS ---
         function showQuiz(cp) {
@@ -2062,7 +2107,7 @@ push ini ke repository<!DOCTYPE html>
             document.getElementById('quiz-submit-btn').disabled = false;
             
             // Hide all options first
-            ['mcq', 'slider', 'cutscene', 'input', 'multi-input', 'text'].forEach(id => document.getElementById(`quiz-options-${id}`).classList.add('hidden'));
+            ['mcq', 'slider', 'cutscene', 'input', 'multi-input', 'text', 'cards'].forEach(id => document.getElementById(`quiz-options-${id}`).classList.add('hidden'));
             document.getElementById('quiz-question-container').classList.remove('hidden');
 
             // UPDATE: Handle Custom Image & Simulation
@@ -2093,6 +2138,28 @@ push ini ke repository<!DOCTYPE html>
             } else if (cp.type === 'calc' || cp.type === 'video-calc') {
                 document.getElementById('quiz-options-input').classList.remove('hidden');
                 document.getElementById('quiz-number-input').value = '';
+            } else if (cp.type === 'multi-card') {
+                // Render multi-card essay UI
+                const box = document.getElementById('quiz-options-cards'); box.classList.remove('hidden'); box.innerHTML = '';
+                cp.cards.forEach((card, idx) => {
+                    const locked = card.locked ? 'opacity-60' : '';
+                    box.innerHTML += `
+                        <div id="card-${card.id}" class="mb-3 p-3 rounded-lg border-2 border-black bg-white ${locked}">
+                            <div class="flex items-center justify-between mb-2">
+                                <div class="font-black">${card.title}</div>
+                                <div class="text-xs font-bold text-gray-500">${card.locked ? 'Terkunci' : 'Terbuka'}</div>
+                            </div>
+                            ${card.sim && card.sim.type === 'image' ? `<div class="mb-2 w-full h-40 overflow-hidden rounded"><img src="${card.sim.src}" class="w-full h-full object-contain"/></div>` : ''}
+                            <p class="text-sm mb-2">${card.question}</p>
+                            <textarea id="card-input-${card.id}" class="w-full p-2 border-2 border-black rounded h-20" placeholder="Tulis jawabanmu di sini..." ${card.locked? 'disabled':''}></textarea>
+                            <div class="flex gap-2 mt-2">
+                                <button id="card-btn-${card.id}" class="btn-3d bg-blue-600 text-white font-black py-2 px-4 rounded uppercase" ${card.locked? 'disabled':''} onclick="completeCard('${card.id}')">Selesai</button>
+                                <div id="card-status-${card.id}" class="text-sm font-black self-center ml-auto text-green-700"></div>
+                            </div>
+                        </div>`;
+                });
+                // Disable default submit button for multi-card flow
+                document.getElementById('quiz-submit-btn').disabled = true;
             } else if (cp.type === 'calc-multi') {
                 const c = document.getElementById('quiz-options-multi-input'); c.classList.remove('hidden'); c.innerHTML = '';
                 cp.options.inputs.forEach(inp => c.innerHTML += `<div class="mb-2"><label class="block text-[10px] font-black text-gray-700 uppercase mb-1">${inp.label}:</label><div class="flex items-center gap-1"><input type="number" id="${inp.id}" placeholder="?" class="w-full p-1.5 text-lg font-bold text-center border-2 border-black rounded focus:bg-yellow-50 outline-none"><span class="text-xs font-bold text-gray-500">${inp.unit}</span></div></div>`);
