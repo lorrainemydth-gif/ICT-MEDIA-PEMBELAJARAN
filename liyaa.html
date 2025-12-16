@@ -480,8 +480,8 @@
                                     <div id="quiz-options-input" class="hidden space-y-2 bg-gray-100 p-4 rounded-xl border-2 border-black">
                                         <label class="block text-xs font-black text-gray-500 uppercase tracking-wider text-center">Masukkan Jawaban (Angka):</label>
                                         <div class="flex items-center gap-2">
-                                            <input type="number" id="quiz-number-input" placeholder="0" class="w-full p-3 text-2xl font-black text-center border-2 border-black rounded-lg focus:bg-yellow-50 outline-none shadow-inner">
-                                            <span class="text-sm font-bold text-gray-500 w-12">Unit (N)</span>
+                                            <input type="text" id="quiz-number-input" placeholder="0" class="w-full p-3 text-2xl font-black text-center border-2 border-black rounded-lg focus:bg-yellow-50 outline-none shadow-inner">
+                                            <span id="quiz-input-unit" class="text-sm font-bold text-gray-500 w-20">Unit</span>
                                         </div>
                                     </div>
 
@@ -703,16 +703,16 @@
 
                 // LEVEL 2: HITUNGAN IMPULS DASAR (I = Δp) - MUDAH
                 { 
-                    id: 2, x: 2000, type: 'text-input', visual: 'cliff', 
-                    question: "Gambar berikut menunjukkan grafik resultan gaya (F) yang bekerja pada sebuah benda terhadap waktu (t). Tentukan besar impuls benda dalam selang waktu 3 - 5 sekon!",
+                    id: 2, x: 2000, type: 'calc', visual: 'cliff', 
+                    question: "Gambar berikut menunjukkan grafik resultan gaya (F) yang bekerja pada sebuah benda terhadap waktu (t). Tentukan besar impuls benda dalam selang waktu 3 - 5 sekon (N·s)!",
                     sim: {
                         type: 'image',
                         src: 'https://raw.githubusercontent.com/lorrainemydth-gif/ICT-MEDIA-PEMBELAJARAN/f303b6da2643fc3d2bc2e76b4249e9c518e7b7eb/WhatsApp%20Image%202025-12-15%20at%208.08.45%20AM.jpeg'
                     },
                     options: { 
-                        keywords: ['impuls','impulse','N.s','N.s.','N s'],
-                        feedback: { correct: "Jawaban dicatat — bandingkan dengan perhitungan area di bawah kurva.", wrong: "Perhatikan: impuls = integral F dt = luas area di bawah grafik antara 3-5 s." }, 
-                        explanation: "Hitung luas area di bawah kurva antara t=3 dan t=5 sekon (gunakan satuan N·s)."
+                        input: { correctValue: 8/3, tolerance: 0.05, unit: 'N.s' },
+                        feedback: { correct: "Betul — impuls = luas area di bawah kurva antara 3–5 s (≈ 2.67 N·s).", wrong: "Coba lagi — hitung luas area di bawah kurva antara t=3 dan t=5 s (hasil ≈ 2.67 N·s)." }, 
+                        explanation: "Impuls = integral F dt; untuk kurva ini luasnya sama dengan 8/3 N·s ≈ 2.67 N·s. Anda dapat memasukkan 2.67 atau pecahan 8/3."
                     } 
                 },
 
@@ -1932,11 +1932,23 @@
                 feedbackText = cp.options.explanation;
 
             } else if (cp.type === 'calc' || cp.type === 'video-calc') {
-                const val = parseFloat(document.getElementById('quiz-number-input').value);
+                const raw = document.getElementById('quiz-number-input').value.trim();
+                let val = NaN;
+                // Accept fraction input like '8/3'
+                if (raw.includes('/')) {
+                    const parts = raw.split('/').map(s => s.trim());
+                    if (parts.length === 2) {
+                        const a = parseFloat(parts[0].replace(',','.'));
+                        const b = parseFloat(parts[1].replace(',','.'));
+                        if (!isNaN(a) && !isNaN(b) && b !== 0) val = a / b;
+                    }
+                } else {
+                    val = parseFloat(raw.replace(',','.'));
+                }
                 const target = cp.options.input.correctValue;
-                
+
                 // Simpan Data Laporan
-                userAnswerDisplay = isNaN(val) ? "Input Tidak Valid" : val.toString();
+                userAnswerDisplay = raw.length === 0 ? "Kosong" : raw;
                 correctAnswerDisplay = target.toString();
 
                 if (!isNaN(val) && Math.abs(val - target) <= (cp.options.input.tolerance || 0)) {
@@ -1944,7 +1956,6 @@
                 } else {
                     feedbackText = cp.options.feedback.wrong;
                 }
-
             } else if (cp.type === 'calc-multi') {
                 let allCorrect = true;
                 const parts = [];
@@ -2138,6 +2149,8 @@
             } else if (cp.type === 'calc' || cp.type === 'video-calc') {
                 document.getElementById('quiz-options-input').classList.remove('hidden');
                 document.getElementById('quiz-number-input').value = '';
+                // Show unit next to input if provided
+                const unitEl = document.getElementById('quiz-input-unit'); if (unitEl) unitEl.innerText = (cp.options && cp.options.input && cp.options.input.unit) ? cp.options.input.unit : 'Unit';
             } else if (cp.type === 'multi-card') {
                 // Render multi-card essay UI
                 const box = document.getElementById('quiz-options-cards'); box.classList.remove('hidden'); box.innerHTML = '';
