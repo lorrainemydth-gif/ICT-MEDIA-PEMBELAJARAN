@@ -752,45 +752,37 @@
                     options: { input: { correctValue: 1, tolerance: 0.05, unit: 'm/s' }, feedback: { correct: 'Benar — kecepatan bola A setelah tumbukan = 1 m/s', wrong: 'Coba lagi — gunakan kekekalan momentum untuk tumbukan tidak lenting sama sekali.' } }
                 },
 
-                // LEVEL 6: KARTU-2 (dari sebelumnya multi-card)
+                // LEVEL 6: TUMBUKAN LENTING SEBAGIAN (KECEPATAN PANTUL)
                 {
                     id: 6, x: 5600, type: 'calc', visual: 'mud',
-                    question: "Sebuah bola basket jatuh dari ketinggian 6,25 m lalu memantul kembali hingga ketinggian 4,5 m. Tentukan tinggi pantulan bola basket berikutnya (m)!",
-                    options: { input: { correctValue: 3.24, tolerance: 0.05, unit: 'm' }, feedback: { correct: 'Benar — hitung e dari rasio ketinggian kemudian h_next = e² × h_current', wrong: 'Ingat: e² = h2 / h1; h3 = e² × h2' }, explanation: 'h2/h1 = 4.5/6.25 = 0.72 -> h3 = 0.72 × 4.5 = 3.24 m' }
+                    question: "Sebuah benda jatuh bebas dari ketinggian 80 m di atas tanah. Jika tumbukan yang terjadi dengan tanah adalah lenting sebagian (e = 0.2), kecepatan pantul benda setelah tumbukan adalah (m/s)?",
+                    options: {
+                        input: { correctValue: 7.92, tolerance: 0.05, unit: 'm/s' },
+                        feedback: { correct: 'Benar — v_rebound = e × v_impact dan v_impact = √(2gh).', wrong: 'Coba lagi — hitung v_impact = √(2gh) lalu kalikan dengan e.' },
+                        explanation: 'v_impact = √(2·g·h) ≈ √(2·9.8·80) ≈ 39.6 m/s; v_rebound = 0.2 × 39.6 ≈ 7.92 m/s'
+                    }
                 },
 
-                // LEVEL 7: KARTU-3 (dari sebelumnya multi-card)
+                // LEVEL 7: TUMBUKAN LENTING SEBAGIAN (TINGGI PANTUL BERURUTAN)
                 {
-                    id: 7, x: 6200, type: 'calc-multi', visual: 'mud',
-                    question: "Terdapat dua benda yang memiliki massa 10 kg dan 6 kg. Keduanya bergerak pada bidang datar yang licin, sementara kecepatannya adalah 4 m/s dan 8 m/s. Arah kedua benda berlawanan. Jika terjadi tumbukan lenting sempurna, maka berapakah kecepatan masing-masing benda setelah tumbukan?",
-                    options: { inputs: [ { id: 'ans-v1-5', label: "Kecepatan Akhir Benda 1 (v1')", unit: "m/s", correctValue: -5, tolerance: 0.1 }, { id: 'ans-v2-5', label: "Kecepatan Akhir Benda 2 (v2')", unit: "m/s", correctValue: 7, tolerance: 0.1 } ], feedback: { correct: "Sempurna!", wrong: "Gunakan rumus tumbukan lenting sempurna untuk menghitung v1' dan v2'" } }
+                    id: 7, x: 6200, type: 'calc', visual: 'mud',
+                    question: "Tumbukan Lenting Sebagian\nSebuah bola basket jatuh dari ketinggian 6,25 m lalu memantul kembali hingga ketinggian 4,5 m. Tentukan tinggi pantulan bola basket berikutnya (m)!",
+                    options: { input: { correctValue: 3.24, tolerance: 0.05, unit: 'm' }, feedback: { correct: 'Benar — h_next = e² × h_current', wrong: 'Ingat: e² = h2/h1; h3 = e² × h2' }, explanation: 'h2/h1 = 4.5/6.25 = 0.72 -> h3 = 0.72 × 4.5 = 3.24 m' }
                 },
 
-                // LEVEL 8: TUMBUKAN TIDAK LENTING (Bola Vertikal) - SULIT (dipindahkan dari id 6)
-                { 
-                    id: 8, x: 6800, type: 'calc', visual: 'truck', 
-                    question: "Sebuah bola bermassa 0,5 kg dilempar vertikal ke atas dengan kecepatan awal 20 m/s. Bola ini kemudian menumbuk sebuah balok bermassa 2 kg yang dapat bergerak bebas. Setelah tumbukan, bola dan balok bergerak bersama dengan kecepatan yang sama. Jika posisi balok sebelum tumbukan diam, hitunglah seberapa tinggi bola akan naik setelah tumbukan!", 
-                    sim: {}, 
-                    options: { 
-                        input: { correctValue: 0.8, tolerance: 0.1 }, 
-                        feedback: { correct: "Tepat! Gunakan kekekalan momentum + energi kinetik.", wrong: "Gunakan: (1) m_bola·v_bola = (m_bola + m_balok)·v_gabung, (2) h = v²/(2g)" }, 
-                        explanation: "m_bola·v_bola = (m_bola + m_balok)·v_gabung -> 0.5·20 = 2.5·v_gabung -> v_gabung = 4 m/s. h = v²/(2g) = 16/(2·10) = 0.8 m" 
-                    } 
+                // LEVEL 8: TUMBUKAN LENTING SEMPURNA (Dua benda 10 kg & 6 kg)
+                {
+                    id: 8, x: 6800, type: 'calc-multi', visual: 'mud',
+                    question: "Tumbukan Lenting Sempurna\nTerdapat dua benda yang memiliki massa 10 kg dan 6 kg. Keduanya bergerak pada bidang datar yang licin, sementara kecepatannya adalah 4 m/s dan 8 m/s. Arah kedua benda berlawanan. Jika terjadi tumbukan lenting sempurna, maka berapakah kecepatan masing-masing benda setelah tumbukan?",
+                    options: { inputs: [ { id: 'ans-v1-8', label: "Kecepatan Akhir Benda 1 (v1')", unit: "m/s", correctValue: -5, tolerance: 0.1 }, { id: 'ans-v2-8', label: "Kecepatan Akhir Benda 2 (v2')", unit: "m/s", correctValue: 7, tolerance: 0.1 } ], feedback: { correct: "Sempurna!", wrong: "Gunakan rumus tumbukan lenting sempurna untuk menghitung v1' dan v2'" } }
                 },
 
-                // LEVEL 9: RECOIL / LEDAKAN (Aksi-Reaksi) - SULIT (dipindahkan dari id 7)
-                { 
-                    id: 9, x: 7400, type: 'calc', visual: 'croc', 
-                    question: "Sebuah bola jatuh bebas dari ketinggian 4 m diatas lantai. Jika koefisien restitusi = ½, maka tinggi bola setelah tumbukan pertama adalah ....", 
-                    sim: {
-                        type: 'image',
-                        src: 'https://raw.githubusercontent.com/yuramarvellyn-cmyk/MEDIA-PEMBELAJARAN-ICT/b06badd48158385767ac2a172ad4936921b11d45/soal%207%20ict.jpg'
-                    }, 
-                    options: { 
-                        input: { correctValue: 1, tolerance: 0.1 }, 
-                        feedback: { correct: "Tepat! h_pantul = e² × h_awal", wrong: "Rumus: h' = e² × h -> (1/2)² × 4 = 1/4 × 4 = 1 m" }, 
-                        explanation: "h' = e²·h = (0.5)²·4 = 0.25·4 = 1 m" 
-                    } 
+                // LEVEL 9: TUMBUKAN LENTING TIDAK SEMPURNA (GAMBAR - SIMPAN UNTUK PENILAIAN GURU)
+                {
+                    id: 9, x: 7400, type: 'text-input', visual: 'croc',
+                    question: "Bola A dan B masing-masing bermassa 1 kg dan 2 kg secara bersamaan dilepaskan hingga meluncur di atas bidang yang licin seperti gambar. Setelah bertumbukan di bidang datar, kedua benda menjadi satu dan bergerak bersama-sama. Tentukan kecepatan kedua bola setelah bertumbukan! (Tulis langkah perhitungan dan hasil akhir dalam m/s).",
+                    sim: { type: 'image', src: 'https://raw.githubusercontent.com/lorrainemydth-gif/ICT-MEDIA-PEMBELAJARAN/956343b4347b716263d646a8c84f94bb9d4c8db0/WhatsApp%20Image%202025-12-16%20at%2012.38.16%20PM.jpeg' },
+                    options: { input: { placeholder: 'Misal: v = 2.0 m/s' }, feedback: { saved: 'Jawaban disimpan untuk penilaian guru — tidak dievaluasi otomatis.' }, noEval: true }
                 },
 
                 // LEVEL 10: IMPULS VEKTOR (Memantul Balik) - SANGAT SULIT (dipindahkan dari id 8)
@@ -1900,6 +1892,57 @@
             let correctAnswerDisplay = "-";
 
             document.getElementById('quiz-submit-btn').disabled = true;
+
+            // No-eval mode: simpan jawaban untuk penilaian guru tanpa evaluasi otomatis
+            if (cp.options && cp.options.noEval) {
+                // Kumpulkan jawaban tergantung tipe soal
+                if (cp.type === 'text-input') {
+                    const val = document.getElementById('quiz-text-input').value.trim();
+                    userAnswerDisplay = val.length === 0 ? 'Kosong' : val;
+                } else if (cp.type === 'calc') {
+                    const raw = document.getElementById('quiz-number-input').value.trim();
+                    userAnswerDisplay = raw.length === 0 ? 'Kosong' : raw;
+                } else if (cp.type === 'calc-multi') {
+                    const parts = [];
+                    if (cp.options && Array.isArray(cp.options.inputs)) {
+                        cp.options.inputs.forEach(inp => {
+                            const el = document.getElementById(inp.id);
+                            const val = el ? el.value.trim() : '';
+                            parts.push(`${inp.label}=${val}${inp.unit?inp.unit:''}`);
+                        });
+                        userAnswerDisplay = parts.join(' | ');
+                    } else { userAnswerDisplay = 'Kosong'; }
+                } else {
+                    userAnswerDisplay = 'Kosong';
+                }
+
+                // Catat hasil tanpa skor (points = 0, isCorrect = null)
+                state.levelResults.push({
+                    level: state.currentLevel,
+                    question: cp.question,
+                    isCorrect: null,
+                    points: 0,
+                    userAnswer: userAnswerDisplay,
+                    correctAnswer: '-'
+                });
+
+                const fb = document.getElementById('quiz-feedback');
+                fb.innerText = (cp.options && cp.options.feedback && cp.options.feedback.saved) ? cp.options.feedback.saved : 'Jawaban disimpan untuk penilaian guru (tidak dievaluasi otomatis).';
+                fb.className = "text-center font-black mt-2 h-auto text-yellow-600 text-sm";
+
+                // Buka gate dan lanjutkan ke level berikutnya setelah jeda singkat
+                setTimeout(() => {
+                    showScreen('none');
+                    const g = state.gates.find(gate => gate.id === cp.id); if(g) g.open = true;
+                    const t = state.triggers.find(tr => tr.id === cp.id); if(t) t.active = false;
+                    startCrossingSequence(cp.visual || 'gate', g ? g.x : state.player.x + 100);
+                    state.currentLevel++;
+                    if(state.currentLevel > state.maxLevel) { state.maxLevel = state.currentLevel; savePlayerData(); }
+                    if(state.currentLevel <= state.checkpoints.length) state.currentCheckpoint = state.checkpoints[state.currentLevel - 1];
+                }, 1000);
+
+                return;
+            }
 
             if (cp.type === 'mcq') {
                 // ... (MCQ Logic Tetap) ...
