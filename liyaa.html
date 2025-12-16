@@ -1892,8 +1892,12 @@
                         correct = true; // mark as accepted but will not change score
                         feedbackText = cp.options.feedback && cp.options.feedback.correct ? cp.options.feedback.correct : 'Jawaban tersimpan.';
                         correctAnswerDisplay = '(Tidak dievaluasi pada level ini)';
+                        // If Level 6, include serialized observation snippet in the record for reference
+                        if (cp.id === 6 && state.experimentData && state.experimentData[6] && state.experimentData[6].length) {
+                            userAnswerDisplay += ' | Observasi=' + JSON.stringify(state.experimentData[6]);
+                        }
                         // Store hypothesis for later levels (only Level 6 expected to do this)
-                        if (cp.id === 6) state.hypothesis = val;
+                        if (cp.id === 6) { state.hypothesis = val; /* ensure observation array exists */ if(!state.experimentData) state.experimentData = {}; if(!state.experimentData[6]) state.experimentData[6] = []; }
                     }
                 }
                 else {
@@ -2133,6 +2137,71 @@
                 if(state.currentLevel <= state.checkpoints.length) state.currentCheckpoint = state.checkpoints[state.currentLevel - 1];
             }, 1200);
         }
+
+        // --- Observation table helpers (Level 6) ---
+        function renderObservationTable(levelId) {
+            const arr = (state.experimentData && state.experimentData[levelId]) ? state.experimentData[levelId] : [];
+            const tbody = document.querySelector(`#obs-table-${levelId} tbody`);
+            if(!tbody) return;
+            tbody.innerHTML = '';
+            arr.forEach((r, idx) => {
+                tbody.innerHTML += `
+                    <tr>
+                        <td class="border p-1 text-center">${idx+1}</td>
+                        <td class="border p-1"><input data-idx="${idx}" data-key="massa1" value="${r.massa1||''}" class="w-full p-1 border"/></td>
+                        <td class="border p-1"><input data-idx="${idx}" data-key="massa2" value="${r.massa2||''}" class="w-full p-1 border"/></td>
+                        <td class="border p-1"><input data-idx="${idx}" data-key="v1_before" value="${r.v1_before||''}" class="w-full p-1 border"/></td>
+                        <td class="border p-1"><input data-idx="${idx}" data-key="v2_before" value="${r.v2_before||''}" class="w-full p-1 border"/></td>
+                        <td class="border p-1"><input data-idx="${idx}" data-key="v1_after" value="${r.v1_after||''}" class="w-full p-1 border"/></td>
+                        <td class="border p-1"><input data-idx="${idx}" data-key="v2_after" value="${r.v2_after||''}" class="w-full p-1 border"/></td>
+                        <td class="border p-1"><input data-idx="${idx}" data-key="p_before" value="${r.p_before||''}" class="w-full p-1 border"/></td>
+                        <td class="border p-1"><input data-idx="${idx}" data-key="p_after" value="${r.p_after||''}" class="w-full p-1 border"/></td>
+                        <td class="border p-1 text-center"><button class="btn-3d bg-blue-500 text-white py-1 px-2 rounded" onclick="saveObservationRow(${levelId}, ${idx})">Simpan</button> <button class="btn-3d bg-red-500 text-white py-1 px-2 rounded" onclick="removeObservationRow(${levelId}, ${idx})">Hapus</button></td>
+                    </tr>`;
+            });
+            // attach input change handlers
+            const inputs = tbody.querySelectorAll('input[data-idx]');
+            inputs.forEach(inp => inp.onkeypress = e => { if (e.key === 'Enter') { saveObservationRow(levelId, parseInt(inp.dataset.idx)); } });
+        }
+
+        function addObservationRow(levelId) {
+            if (!state.experimentData) state.experimentData = {};
+            if (!state.experimentData[levelId]) state.experimentData[levelId] = [];
+            state.experimentData[levelId].push({ massa1: '', massa2: '', v1_before: '', v2_before: '', v1_after: '', v2_after: '', p_before: '', p_after: '' });
+            renderObservationTable(levelId);
+            const msg = document.getElementById(`obs-msg-${levelId}`); if (msg) { msg.innerText = 'Baris baru ditambahkan'; setTimeout(()=>msg.innerText='',1500); }
+        }
+
+        function saveObservationRow(levelId, idx) {
+            const tbody = document.querySelector(`#obs-table-${levelId} tbody`);
+            if (!tbody) return;
+            const inputs = tbody.querySelectorAll('input[data-idx]');
+            const obj = state.experimentData[levelId][idx] || {};
+            inputs.forEach(inp => {
+                if (parseInt(inp.dataset.idx) === idx) {
+                    obj[inp.dataset.key] = inp.value.trim();
+                }
+            });
+            state.experimentData[levelId][idx] = obj;
+            renderObservationTable(levelId);
+            const msg = document.getElementById(`obs-msg-${levelId}`); if (msg) { msg.innerText = `Baris ${idx+1} disimpan`; setTimeout(()=>msg.innerText='',1500); }
+        }
+
+        function removeObservationRow(levelId, idx) {
+            if (!state.experimentData || !state.experimentData[levelId]) return;
+            state.experimentData[levelId].splice(idx,1);
+            renderObservationTable(levelId);
+        }
+
+        function exportObservationsCSV(levelId) {
+            const arr = state.experimentData && state.experimentData[levelId] ? state.experimentData[levelId] : [];
+            if (!arr.length) { const msg = document.getElementById(`obs-msg-${levelId}`); if (msg) { msg.innerText = 'Tidak ada data'; setTimeout(()=>msg.innerText='',1500);} return; }
+            const headers = ['massa1','massa2','v1_before','v2_before','v1_after','v2_after','p_before','p_after'];
+            const rows = [headers.join(',')].concat(arr.map(r => headers.map(h => (r[h]||'')).join(','))).join('\n');
+            const blob = new Blob([rows], {type:'text/csv'});
+            const url = URL.createObjectURL(blob);
+            const a = document.createElement('a'); a.href = url; a.download = `observasi_level_${levelId}.csv`; document.body.appendChild(a); a.click(); a.remove(); URL.revokeObjectURL(url);
+        }
         
         // --- HELPERS ---
         function showQuiz(cp) {
@@ -2167,6 +2236,23 @@
                 } else if (cp.sim.type === 'link') {
                     box.classList.remove('hidden');
                     box.innerHTML = `<div class="p-3 text-sm text-center"><a href="${cp.sim.href}" target="_blank" class="font-black underline text-blue-700">${cp.sim.label || cp.sim.href}</a><p class="text-xs text-gray-600 mt-2">(Buka simulasi di tab baru, lakukan percobaan, dan catat data pada Level 6)</p></div>`;
+                    // If this is Level 6, append an observation table UI
+                    if (cp.id === 6) {
+                        if (!state.experimentData) state.experimentData = {};
+                        if (!state.experimentData[6]) state.experimentData[6] = [];
+                        box.innerHTML += `
+                            <div id="obs-area" class="mt-3 p-3 bg-white rounded border-2 border-black text-sm">
+                                <div class="font-black mb-2">Tabel Pengamatan (Level 6)</div>
+                                <div class="text-xs text-gray-600 mb-2">Kolom: massa1 (kg), massa2 (kg), v1_before (m/s), v2_before (m/s), v1_after (m/s), v2_after (m/s), p_total_before (N·s), p_total_after (N·s)</div>
+                                <div class="flex gap-2 mb-3">
+                                    <button class="btn-3d bg-yellow-400 text-black font-black py-1 px-3 rounded" onclick="addObservationRow(6)">Tambah Baris</button>
+                                    <button class="btn-3d bg-green-500 text-white font-black py-1 px-3 rounded" onclick="exportObservationsCSV(6)">Export CSV</button>
+                                    <div id="obs-msg-6" class="text-xs font-black self-center text-green-700 ml-2"></div>
+                                </div>
+                                <div id="obs-table-wrap-6" class="overflow-x-auto"><table id="obs-table-6" class="w-full text-sm border-collapse"><thead><tr class="bg-gray-100"><th class="border p-1">#</th><th class="border p-1">massa1</th><th class="border p-1">massa2</th><th class="border p-1">v1_before</th><th class="border p-1">v2_before</th><th class="border p-1">v1_after</th><th class="border p-1">v2_after</th><th class="border p-1">p_before</th><th class="border p-1">p_after</th><th class="border p-1">Aksi</th></tr></thead><tbody></tbody></table></div>
+                            </div>`;
+                        renderObservationTable(6);
+                    }
                 } else if (cp.sim.type) {
                     // fallback for custom simulation handlers
                     setupSimulation(cp.sim.type);
